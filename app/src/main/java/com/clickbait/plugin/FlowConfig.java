@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.feed.dsl.Feed;
+import org.springframework.integration.feed.dsl.FeedEntryMessageSourceSpec;
 import org.springframework.integration.file.FileWritingMessageHandler;
 import org.springframework.integration.file.support.FileExistsMode;
 import org.springframework.integration.metadata.MetadataStore;
@@ -56,9 +57,14 @@ public class FlowConfig {
     }
 
     @Bean
+    public FeedEntryMessageSourceSpec inboundAdapter() {
+        return Feed.inboundAdapter(config.getFeed(), config.getTopic()).metadataStore(metadataStore());
+    }
+
+    @Bean
     public IntegrationFlow feedFlow() {
         return IntegrationFlows
-                .from(Feed.inboundAdapter(config.getFeed(), config.getTopic()).metadataStore(metadataStore()),
+                .from(inboundAdapter(),
                         e -> e.poller(p -> p.fixedDelay(config.getPoll())))
                 .transform(extractLinkFromFeed()).handle(targetDirectory())
                 .get();
