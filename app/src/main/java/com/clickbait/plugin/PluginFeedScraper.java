@@ -3,12 +3,27 @@
  */
 package com.clickbait.plugin;
 
+import com.rometools.rome.feed.synd.SyndEntryImpl;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 
 @SpringBootApplication
 public class PluginFeedScraper {
+
     public static void main(String... args) throws Exception {
-        SpringApplication.run(PluginFeedScraper.class, args);
+        ConfigurableApplicationContext ctx = SpringApplication.run(PluginFeedScraper.class, args);
+
+        SyndEntryImpl syndEntry = new SyndEntryImpl();
+        syndEntry.setTitle("1");
+        syndEntry.setAuthor("2");
+        syndEntry.setLink("3");
+
+        ctx.getBean(RssRequestGateway.class).rssRequest(syndEntry.toString());
+
+        System.out.println("Hit 'Enter' to terminate");
+        System.in.read();
+        ctx.close();
     }
 }
