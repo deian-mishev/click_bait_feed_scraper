@@ -3,6 +3,7 @@
  */
 package com.clickbait.plugin;
 
+import com.clickbait.plugin.gateways.RssRequestGateway;
 import com.rometools.rome.feed.synd.SyndEntryImpl;
 
 import org.springframework.boot.SpringApplication;
@@ -16,11 +17,18 @@ public class PluginFeedScraper {
         ConfigurableApplicationContext ctx = SpringApplication.run(PluginFeedScraper.class, args);
 
         SyndEntryImpl syndEntry = new SyndEntryImpl();
-        syndEntry.setTitle("1");
-        syndEntry.setAuthor("2");
-        syndEntry.setLink("3");
+        RssRequestGateway a = ctx.getBean(RssRequestGateway.class);
 
-        ctx.getBean(RssRequestGateway.class).rssRequest(syndEntry.toString());
+        for (int i = 0; i < 10; i++) {
+            String m = i + "";
+            syndEntry.setTitle(m);
+            syndEntry.setAuthor(m);
+            syndEntry.setLink(m);
+            a.rssRequest(syndEntry);
+        }
+
+        a.rssStore("SAVED");
+        a.rssPrint("PRINTED");
 
         System.out.println("Hit 'Enter' to terminate");
         System.in.read();

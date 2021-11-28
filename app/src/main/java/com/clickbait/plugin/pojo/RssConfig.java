@@ -1,4 +1,4 @@
-package com.clickbait.plugin;
+package com.clickbait.plugin.pojo;
 
 import java.net.URL;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -14,7 +14,7 @@ import lombok.Setter;
 public class RssConfig {
     private URL feed;
     private String topic;
-    private Integer poll;
+    private Integer pollRss;
     private String transform;
     private String targetFolder;
     private String targetFormat;

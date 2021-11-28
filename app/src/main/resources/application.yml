@@ -4,4 +4,4 @@ metadataFolder: ./tmp/meta
 targetFormat: "'news-'yyyy-MM-dd-HH:mm'.txt'"
 topic: news
 transform: '%s@%s@%s'
-poll: 10000
+pollRss: 10000
