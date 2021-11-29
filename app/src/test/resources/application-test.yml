@@ -1,0 +1,7 @@
+feed: https://dir.bg/feeds/rss
+targetFolder: ./tmp/feed
+metadataFolder: ./test/meta
+targetFormat: "'news-'yyyy-MM-dd-HH:mm'.txt'"
+topic: news
+transform: '%s@%s@%s'
+pollRss: 10000
