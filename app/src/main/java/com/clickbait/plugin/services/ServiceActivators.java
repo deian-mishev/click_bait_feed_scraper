@@ -7,6 +7,7 @@ import java.util.Date;
 import com.clickbait.plugin.config.RssConfig;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.file.FileWritingMessageHandler;
 import org.springframework.integration.file.support.FileExistsMode;
@@ -21,12 +22,14 @@ public class ServiceActivators {
     @Autowired
     private RssConfig config;
 
-    @ServiceActivator(inputChannel = "printHandler")
+    @Bean // to handler instead of channel
+    @ServiceActivator(inputChannel = "integration.gateway.print", outputChannel = "integration.gateway.response")
     public MessageHandler printHandler() {
         return System.out::println;
     }
 
-    @ServiceActivator(inputChannel = "storeHandler")
+    @Bean
+    @ServiceActivator(inputChannel = "integration.gateway.store", outputChannel = "integration.gateway.response")
     public MessageHandler storeHandler() {
         FileWritingMessageHandler handler = new FileWritingMessageHandler(new File(config.getTargetFolder()));
         handler.setFileNameGenerator(
@@ -43,5 +46,11 @@ public class ServiceActivators {
         router.addRecipient("integration.gateway.print");
         router.addRecipient("integration.gateway.store");
         return router;
+    }
+
+    @Bean
+    @ServiceActivator(inputChannel = "integration.gateway.response")
+    public void storeResponse(Message<String> message) {
+        System.out.println(message);
     }
 }

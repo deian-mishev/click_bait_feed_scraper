@@ -1,6 +1,5 @@
 package com.clickbait.plugin.config;
 
-import com.clickbait.plugin.services.ServiceActivators;
 import com.clickbait.plugin.transformer.RssTransformer;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +19,6 @@ public class FlowConfig {
 
     @Autowired
     private RssConfig config;
-
-    @Autowired
-    private ServiceActivators activators;
 
     @Autowired
     private RssTransformer transformer;
@@ -50,7 +46,6 @@ public class FlowConfig {
 
     @Bean
     public IntegrationFlow rssFeed(@Qualifier("rssPoller") PollerMetadata pollerMetadata) {
-        System.out.println();
         return IntegrationFlows
                 .from(feedMessageSource(), e -> e.poller(pollerMetadata))
                 .fixedSubscriberChannel()
@@ -65,22 +60,6 @@ public class FlowConfig {
                 .routeToRecipients(r -> r
                         .recipient("integration.gateway.print")
                         .recipient("integration.gateway.store"))
-                .get();
-    }
-
-    @Bean
-    public IntegrationFlow messageHandlerFlow() {
-        return IntegrationFlows
-                .from("integration.gateway.print")
-                .handle(activators.printHandler())
-                .get();
-    }
-
-    @Bean
-    public IntegrationFlow storeHandlerFlow() {
-        return IntegrationFlows
-                .from("integration.gateway.store")
-                .handle(activators.storeHandler())
                 .get();
     }
 }
