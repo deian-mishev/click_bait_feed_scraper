@@ -25,6 +25,7 @@ dependencies {
 
     implementation 'org.projectlombok:lombok'
     implementation 'com.google.guava:guava:30.1.1-jre'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-integration'
 	implementation 'org.springframework.integration:spring-integration-feed'
 	implementation 'org.springframework.integration:spring-integration-file'

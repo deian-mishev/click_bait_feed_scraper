@@ -1,8 +1,7 @@
 package com.clickbait.plugin.config;
 
-import com.clickbait.plugin.ServiceActivators;
-import com.clickbait.plugin.Transformers;
-import com.clickbait.plugin.pojo.RssConfig;
+import com.clickbait.plugin.services.ServiceActivators;
+import com.clickbait.plugin.transformer.RssTransformer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,7 +25,7 @@ public class FlowConfig {
     private ServiceActivators activators;
 
     @Autowired
-    private Transformers transformer;
+    private RssTransformer transformer;
 
     @Bean
     public MetadataStore metadataStore() {
@@ -64,15 +63,15 @@ public class FlowConfig {
         return IntegrationFlows
                 .from("storeAndPrint")
                 .routeToRecipients(r -> r
-                        .recipient("print")
-                        .recipient("store"))
+                        .recipient("integration.gateway.print")
+                        .recipient("integration.gateway.store"))
                 .get();
     }
 
     @Bean
     public IntegrationFlow messageHandlerFlow() {
         return IntegrationFlows
-                .from("print")
+                .from("integration.gateway.print")
                 .handle(activators.printHandler())
                 .get();
     }
@@ -80,7 +79,7 @@ public class FlowConfig {
     @Bean
     public IntegrationFlow storeHandlerFlow() {
         return IntegrationFlows
-                .from("store")
+                .from("integration.gateway.store")
                 .handle(activators.storeHandler())
                 .get();
     }

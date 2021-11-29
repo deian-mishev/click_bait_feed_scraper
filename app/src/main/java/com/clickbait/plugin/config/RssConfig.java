@@ -1,4 +1,4 @@
-package com.clickbait.plugin.pojo;
+package com.clickbait.plugin.config;
 
 import java.net.URL;
 import org.springframework.boot.context.properties.ConfigurationProperties;

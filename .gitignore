@@ -6,3 +6,4 @@ build
 tmp/
 bin/
 .vscode
+app/src/test/java/com/clickbait/plugin/MessageChennelTest.java

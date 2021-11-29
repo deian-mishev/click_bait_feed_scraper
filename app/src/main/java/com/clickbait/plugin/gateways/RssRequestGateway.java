@@ -10,9 +10,9 @@ public interface RssRequestGateway {
     @Gateway(requestChannel = "directChannel")
     void rssRequest(SyndEntryImpl syndEntry);
 
-    @Gateway(requestChannel = "store")
-    void rssStore(String entry);
+    @Gateway(requestChannel = "integration.gateway.store")
+    String rssStore(String entry);
 
-    @Gateway(requestChannel = "print")
-    void rssPrint(String entry);
+    @Gateway(requestChannel = "integration.gateway.print")
+    String rssPrint(String entry);
 }

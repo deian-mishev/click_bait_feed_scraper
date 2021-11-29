@@ -1,6 +1,6 @@
-package com.clickbait.plugin;
+package com.clickbait.plugin.transformer;
 
-import com.clickbait.plugin.pojo.RssConfig;
+import com.clickbait.plugin.config.RssConfig;
 import com.rometools.rome.feed.synd.SyndEntry;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +9,7 @@ import org.springframework.integration.transformer.AbstractPayloadTransformer;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Transformers {
+public class RssTransformer {
     @Autowired
     private RssConfig config;
 

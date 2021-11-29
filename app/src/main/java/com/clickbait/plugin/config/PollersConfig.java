@@ -1,7 +1,5 @@
 package com.clickbait.plugin.config;
 
-import com.clickbait.plugin.pojo.RssConfig;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,10 +1,10 @@
-package com.clickbait.plugin;
+package com.clickbait.plugin.services;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.clickbait.plugin.pojo.RssConfig;
+import com.clickbait.plugin.config.RssConfig;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.integration.annotation.ServiceActivator;
@@ -40,8 +40,8 @@ public class ServiceActivators {
     @ServiceActivator(inputChannel = "splitterHandler")
     public RecipientListRouter splitterHandler() {
         RecipientListRouter router = new RecipientListRouter();
-        router.addRecipient("print");
-        router.addRecipient("store");
+        router.addRecipient("integration.gateway.print");
+        router.addRecipient("integration.gateway.store");
         return router;
     }
 }
