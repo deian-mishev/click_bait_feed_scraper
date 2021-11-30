@@ -2,7 +2,6 @@ package com.clickbait.plugin.routers;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.integration.annotation.Router;
-import org.springframework.integration.router.PayloadTypeRouter;
 import org.springframework.integration.router.RecipientListRouter;
 import org.springframework.stereotype.Component;
 

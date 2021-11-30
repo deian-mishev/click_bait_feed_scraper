@@ -12,7 +12,7 @@ import lombok.Setter;
 @Configuration
 @ConfigurationProperties
 public class RssConfig {
-    private URL feed;
+    private URL[] feeds;
     private String topic;
     private Integer pollRss;
     private String transform;

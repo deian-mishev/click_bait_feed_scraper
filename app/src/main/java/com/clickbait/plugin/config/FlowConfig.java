@@ -1,41 +1,51 @@
 package com.clickbait.plugin.config;
 
-import com.clickbait.plugin.transformer.RssTransformer;
+import java.net.URL;
+
+import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.integration.dsl.IntegrationFlow;
 import org.springframework.integration.dsl.IntegrationFlows;
 import org.springframework.integration.feed.dsl.Feed;
 import org.springframework.integration.feed.dsl.FeedEntryMessageSourceSpec;
 import org.springframework.integration.metadata.MetadataStore;
-import org.springframework.integration.metadata.PropertiesPersistingMetadataStore;
-import org.springframework.integration.scheduling.PollerMetadata;
+import org.springframework.stereotype.Component;
 
-@Configuration
+@Component
+@Order(Ordered.LOWEST_PRECEDENCE)
 public class FlowConfig {
+    @Autowired
+    private GenericApplicationContext context;
+
+    @Autowired
+    @Qualifier("rssMetadataStore")
+    private MetadataStore metadataStore;
 
     @Autowired
     private RssConfig config;
 
-    @Bean
-    public MetadataStore metadataStore() {
-        PropertiesPersistingMetadataStore metadataStore = new PropertiesPersistingMetadataStore();
-        metadataStore.setBaseDirectory(config.getMetadataFolder());
-        return metadataStore;
+    @PostConstruct
+    public void registerFlows() {
+        for (URL el : config.getFeeds()) {
+            context.registerBean(el.toString(), IntegrationFlow.class,
+                    () -> rssFeed(metadataStore, el, config.getTopic()));
+            context.getBean(el.toString());
+        }
     }
 
-    @Bean(name = "feedMessageSource")
-    public FeedEntryMessageSourceSpec feedMessageSource() {
-        return Feed.inboundAdapter(config.getFeed(), config.getTopic()).metadataStore(metadataStore());
+    public FeedEntryMessageSourceSpec feedMessageSource(MetadataStore metadataStore, URL feed, String topic) {
+        return Feed.inboundAdapter(feed, topic).metadataStore(metadataStore);
     }
 
-    @Bean
-    public IntegrationFlow rssFeed(@Qualifier("rssPoller") PollerMetadata pollerMetadata) {
+    public IntegrationFlow rssFeed(MetadataStore metadataStore, URL feed, String topic) {
         return IntegrationFlows
-                .from(feedMessageSource(), e -> e.poller(pollerMetadata))
+                .from(feedMessageSource(metadataStore, feed, topic),
+                        e -> e.poller(c -> c.fixedDelay(5000)))
                 .fixedSubscriberChannel()
                 .channel("transform")
                 .get();

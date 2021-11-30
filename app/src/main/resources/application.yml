@@ -1,7 +1,7 @@
-feed: https://dir.bg/feeds/rss
+feeds: https://dir.bg/feeds/rss, https://fakti.bg/feed, https://www.kaldata.com/feed
 targetFolder: ./tmp/feed
 metadataFolder: ./tmp/meta
-targetFormat: "'news-'yyyy-MM-dd-HH'.txt'"
+targetFormat: "'news-'yyyy-MM-dd:HH'.txt'"
 topic: news
 transform: '%s@%s@%s'
 pollRss: 10000

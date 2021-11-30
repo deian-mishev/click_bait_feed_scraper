@@ -11,7 +11,7 @@ public class PollersConfig {
     @Autowired
     private RssConfig config;
 
-    @Bean(name = "rssPoller")
+    @Bean(name = PollerMetadata.DEFAULT_POLLER)
     public PollerMetadata poller() {
         return Pollers.fixedDelay(config.getPollRss()).get();
     }
