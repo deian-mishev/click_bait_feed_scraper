@@ -34,7 +34,7 @@ public class FlowConfig {
         for (URL el : config.getFeeds()) {
             context.registerBean(el.toString(), IntegrationFlow.class,
                     () -> rssFeed(metadataStore, el, config.getTopic()));
-            context.getBean(el.toString());
+            context.getBean(el.toString()); // Method bean kicker
         }
     }
 
@@ -44,8 +44,7 @@ public class FlowConfig {
 
     public IntegrationFlow rssFeed(MetadataStore metadataStore, URL feed, String topic) {
         return IntegrationFlows
-                .from(feedMessageSource(metadataStore, feed, topic),
-                        e -> e.poller(c -> c.fixedDelay(5000)))
+                .from(feedMessageSource(metadataStore, feed, topic))
                 .fixedSubscriberChannel()
                 .channel("transform")
                 .get();
