@@ -10,14 +10,19 @@ import org.springframework.messaging.MessageChannel;
 @Configuration
 public class MessageChannelConfig {
 
-    @Bean(name = "directChannel")
+    @Bean(name = "integration.gateway.direct")
     @BridgeTo("transform")
     public MessageChannel directChannel() {
         return new DirectChannel();
     }
 
-    @Bean(name = "storeAndPrint")
+    @Bean(name = "integration.gateway.split")
     public MessageChannel storeAndPrint() {
-        return MessageChannels.publishSubscribe("storeAndPrint").get();
+        return MessageChannels.publishSubscribe("integration.gateway.split").get();
+    }
+
+    @Bean(name = "integration.gateway.replay")
+    public MessageChannel replayChannel() {
+        return new DirectChannel();
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.file.FileWritingMessageHandler;
 import org.springframework.integration.file.support.FileExistsMode;
 import org.springframework.integration.router.RecipientListRouter;
+import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.stereotype.Component;
@@ -22,14 +23,15 @@ public class ServiceActivators {
     @Autowired
     private RssConfig config;
 
-    @Bean // to handler instead of channel
-    @ServiceActivator(inputChannel = "integration.gateway.print", outputChannel = "integration.gateway.response")
+    // Handlers
+    @Bean
+    @ServiceActivator(inputChannel = "integration.gateway.print")
     public MessageHandler printHandler() {
         return System.out::println;
     }
 
     @Bean
-    @ServiceActivator(inputChannel = "integration.gateway.store", outputChannel = "integration.gateway.response")
+    @ServiceActivator(inputChannel = "integration.gateway.store")
     public MessageHandler storeHandler() {
         FileWritingMessageHandler handler = new FileWritingMessageHandler(new File(config.getTargetFolder()));
         handler.setFileNameGenerator(
@@ -40,17 +42,30 @@ public class ServiceActivators {
         return handler;
     }
 
-    @ServiceActivator(inputChannel = "splitterHandler")
-    public RecipientListRouter splitterHandler() {
+    // True Activators
+    @ServiceActivator(inputChannel = "integration.gateway.direct.split")
+    public RecipientListRouter splitterStoreHandler() {
         RecipientListRouter router = new RecipientListRouter();
-        router.addRecipient("integration.gateway.print");
         router.addRecipient("integration.gateway.store");
+        router.addRecipient("integration.gateway.print");
         return router;
     }
 
-    @Bean
-    @ServiceActivator(inputChannel = "integration.gateway.response")
-    public void storeResponse(Message<String> message) {
-        System.out.println(message);
+    @ServiceActivator(inputChannel = "integration.gateway.store.response", outputChannel = "integration.gateway.replay")
+    public Message<String> storeReplay(Message<String> message) {
+        MessageBuilder.fromMessage(message);
+        Message<String> replay = MessageBuilder
+                .withPayload("Storing " + message.getPayload())
+                .build();
+        return replay;
+    }
+
+    @ServiceActivator(inputChannel = "integration.gateway.print.response", outputChannel = "integration.gateway.replay")
+    public Message<String> printReplay(Message<String> message) {
+        MessageBuilder.fromMessage(message);
+        Message<String> replay = MessageBuilder
+                .withPayload("Printing " + message.getPayload())
+                .build();
+        return replay;
     }
 }

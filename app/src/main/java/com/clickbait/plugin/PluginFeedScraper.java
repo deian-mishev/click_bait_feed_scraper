@@ -24,8 +24,8 @@ public class PluginFeedScraper {
             a.rssRequest(syndEntry);
         }
 
-        a.rssStore("SAVED");
         a.rssPrint("PRINTED");
+        a.rssStore("SAVED");
 
         System.out.println("Hit 'Enter' to terminate");
         System.in.read();
