@@ -5,15 +5,18 @@ import com.rometools.rome.feed.synd.SyndEntry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.integration.annotation.Transformer;
 import org.springframework.integration.transformer.AbstractPayloadTransformer;
-import org.springframework.stereotype.Component;
 
-@Component
+@Configuration
 public class RssTransformer {
+
     @Autowired
     private RssConfig config;
 
     @Bean(name = "extractLinkFromFeed")
+    @Transformer(inputChannel = "transform", outputChannel = "integration.gateway.split")
     public AbstractPayloadTransformer<SyndEntry, String> extractLinkFromFeed() {
         return new AbstractPayloadTransformer<SyndEntry, String>() {
             @Override

@@ -8,6 +8,7 @@ import com.clickbait.plugin.config.RssConfig;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.integration.annotation.Router;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.file.FileWritingMessageHandler;
 import org.springframework.integration.file.support.FileExistsMode;
@@ -43,12 +44,13 @@ public class ServiceActivators {
     }
 
     // True Activators
-    @ServiceActivator(inputChannel = "integration.gateway.direct.split")
-    public RecipientListRouter splitterStoreHandler() {
-        RecipientListRouter router = new RecipientListRouter();
-        router.addRecipient("integration.gateway.store");
-        router.addRecipient("integration.gateway.print");
-        return router;
+    @ServiceActivator(inputChannel = "integration.gateway.direct.store", outputChannel = "integration.gateway.direct.store.fixed")
+    public Message<String> storePrintFix(Message<String> message) {
+        MessageBuilder.fromMessage(message);
+        Message<String> replay = MessageBuilder
+                .withPayload(message.getPayload() + System.lineSeparator())
+                .build();
+        return replay;
     }
 
     @ServiceActivator(inputChannel = "integration.gateway.store.response", outputChannel = "integration.gateway.replay")
