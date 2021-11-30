@@ -26,4 +26,15 @@ public class RssTransformer {
             }
         };
     }
+
+    @Bean(name = "addSeparatorToStore")
+    @Transformer(inputChannel = "integration.gateway.direct.store", outputChannel = "integration.gateway.direct.store.fixed")
+    public AbstractPayloadTransformer<String, String> storePrintFix() {
+        return new AbstractPayloadTransformer<String, String>() {
+            @Override
+            protected String transformPayload(String payload) {
+                return payload + System.lineSeparator();
+            }
+        };
+    }
 }
