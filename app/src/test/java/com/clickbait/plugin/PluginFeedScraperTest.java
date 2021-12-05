@@ -42,7 +42,7 @@ class PluginFeedScraperTest {
     @Autowired
     private PollableChannel entries;
 
-    @Value("seed.rss")
+    @Value("classpath:seed.rss")
     private URL feedUrl;
 
     @Value("${metadataFolder}")
@@ -83,7 +83,7 @@ class PluginFeedScraperTest {
     @EnableIntegration
     public static class ContextConfiguration {
 
-        @Value("seed.rss")
+        @Value("classpath:seed.rss")
         private URL feedUrl;
 
         @Value("${metadataFolder}")
